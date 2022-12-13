@@ -1,28 +1,30 @@
 # IC74HC165
 
-ADT for accessing a 74HC165 PISO buffer.
+ADT for accessing a 74HC165 parallel-in-serial-out (PISO) buffer.
 
-The 74HC165 is an 8-bit parallel-to-serial I/O buffer. This library
-allows the host application to read the buffer.
+## Constructor
 
-Example:
 ```
-#define PisoDataGpio 2
-#define PisoLatchGpio 3
-#define PisoClockGpio 4
-#define MyInterestingBit 6
- 
-IC74HC165 piso(PisoDataGpio, PisoLatchGpio, PisoClockGpio);
- 
-void setup() {
-  piso.begin();
-}
- 
-void loop() {
-  uint8_t byte;
-  int bit;
-
-  byte = piso.readByte();
-  bit = piso.readBit(MyInterestingBit); 
-}
+IC74HC165 myPiso(*gpioClock*, *gpioData*, *gpioLatch*);
 ```
+Create a new IC74HC165 instance for the PISO buffer IC connected to the
+specified GPIO pins.
+
+## Methods
+
+```
+myPiso.begin();
+```
+Call from setup() to configure the operating mode of the GPIO pins (the
+data pin is set to INPUT_PULLUP, the other pins to OUTPUT).
+
+```
+uint8_t status = myPiso.readByte();
+```
+Read the current state of the IC's parallel inputs int *status*.
+
+```
+int state = readBit(*bit*);
+```
+Read into *state* the current value of the IC's parallel input pin
+identified by *bit* (an integer value in the range 0..7).
