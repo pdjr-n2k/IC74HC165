@@ -11,7 +11,6 @@ IC74HC165::IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch) {
   this->gpioClock = gpioClock;
   this->gpioData = gpioData;
   this->gpioLatch = gpioLatch;
-  this->lastsample = 0;
 }
 
 void IC74HC165::begin() {
@@ -22,10 +21,10 @@ void IC74HC165::begin() {
 
 uint8_t IC74HC165::readByte() {
   uint8_t retval = 0;
-  digitalWrite(this->gpioClock, HIGH);
-  digitalWrite(this->gpioLatch, HIGH);
+  digitalWrite(this->gpioClock, 1);
+  digitalWrite(this->gpioLatch, 1);
   retval = shiftIn(this->gpioData, this->gpioClock, MSBFIRST);
-  digitalWrite(this->gpioLatch. LOW);
+  digitalWrite(this->gpioLatch, 0);
   return(retval);
 }
 
