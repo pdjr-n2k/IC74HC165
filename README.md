@@ -12,17 +12,20 @@ specified GPIO pins.
 
 ## Methods
 
+### begin()
 ```
 myPiso.begin();
 ```
 Call from setup() to configure the operating mode of the GPIO pins (the
 data pin is set to INPUT_PULLUP, the other pins to OUTPUT).
 
+### readByte()
 ```
 uint8_t status = myPiso.readByte();
 ```
 Read the current state of the IC's parallel inputs int *status*.
 
+### readBit(*bit*)
 ```
 int state = readBit(*bit*);
 ```
