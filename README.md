@@ -4,8 +4,10 @@ ADT for accessing a 74HC165 parallel-in-serial-out (PISO) buffer.
 
 ## Constructor
 
+### IC74HC165 myPiso(*gpioClock*, *gpioData*, *gpioLatch*);
+
 ```
-IC74HC165 myPiso(*gpioClock*, *gpioData*, *gpioLatch*);
+IC74HC165 myPiso(10, 11, 12);
 ```
 Create a new IC74HC165 instance for the PISO buffer IC connected to the
 specified GPIO pins.
@@ -27,7 +29,7 @@ Read the current state of the IC's parallel inputs int *status*.
 
 ### readBit(*bit*)
 ```
-int state = readBit(*bit*);
+int state = readBit(5);
 ```
 Read into *state* the current value of the IC's parallel input pin
 identified by *bit* (an integer value in the range 0..7).
