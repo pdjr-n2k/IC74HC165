@@ -12,7 +12,7 @@ Example:
 #define PisoClockGpio 4
 #define MyInterestingBit 6
  
-IC74HC165 piso = IC74HC165(PisoDataGpio, PisoLatchGpio, PisoClockGpio);
+IC74HC165 piso(PisoDataGpio, PisoLatchGpio, PisoClockGpio);
  
 void setup() {
   piso.begin();
