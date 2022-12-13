@@ -34,14 +34,14 @@
 
 class IC74HC165 {
   public:
-    IC74HC165(uint8_t gpioData, uint8_t gpioLatch, uint8_t gpioClock);
+    IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch);
     void begin();
     uint8_t readByte();
     int readBit(int bit);
   private:
+    uint8_t gpioClock;
     uint8_t gpioData;
     uint8_t gpioLatch;
-    uint8_t gpioClock
 };
 
 #endif

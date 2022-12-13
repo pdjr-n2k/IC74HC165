@@ -7,17 +7,17 @@
 #include <Arduino.h>
 #include <IC74HC165.h>
 
-IC74HC165::IC74HC165(uint8_t gpioData, uint8_t gpioLatch, uint8_t gpioClock) {
+IC74HC165::IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch) {
+  this->gpioClock = gpioClock;
   this->gpioData = gpioData;
   this->gpioLatch = gpioLatch;
-  this->gpioClock = gpioClock;
   this->lastsample = 0;
 }
 
 void IC74HC165::begin() {
+  pinMode(this->gpioClock, OUTPUT);
   pinMode(this->gpioData, INPUT);
   pinMode(this->gpioLatch, OUTPUT);
-  pinMode(this->gpioClock, OUTPUT);
 }
 
 uint8_t IC74HC165::readByte() {
