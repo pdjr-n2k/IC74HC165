@@ -35,6 +35,6 @@ unsigned int IC74HC165::read(unsigned int count) {
   return(retval);
 }
 
-int IC74HC165::readBit(int bit) {
-  return(((bit >= 0) && (bit <= 7))?bitRead(this->readByte(), bit):-1);
+unsigned int IC74HC165::readBit(unsigned int bit) {
+  return(bitRead(this->read((bit / 8) + 1), bit));
 }
