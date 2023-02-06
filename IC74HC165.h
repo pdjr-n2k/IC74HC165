@@ -11,6 +11,7 @@ class IC74HC165 {
     IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch);
     void begin();
     uint8_t readByte();
+    unsigned int read(unsigned int count = 1);
     int readBit(int bit);
   private:
     uint8_t gpioClock;

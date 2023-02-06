@@ -20,10 +20,17 @@ void IC74HC165::begin() {
 }
 
 uint8_t IC74HC165::readByte() {
-  uint8_t retval = 0;
+  return((unsigned char) this->read());
+}
+
+unsigned int IC74HC165::read(unsigned int count) {
+  unsigned int retval = 0;
   digitalWrite(this->gpioClock, 1);
   digitalWrite(this->gpioLatch, 1);
-  retval = shiftIn(this->gpioData, this->gpioClock, MSBFIRST);
+  while (count--) {
+    retval = (retval << 8);
+    retval |= shiftIn(this->gpioData, this->gpioClock, MSBFIRST);
+  }
   digitalWrite(this->gpioLatch, 0);
   return(retval);
 }
