@@ -64,19 +64,26 @@ class IC74HC165 {
      * function at a regular interfval and works in concert with
      * callbackMaybe().
      * 
-     * @param callback - the function to be called with the current
-     * buffer status,
+     * @param callback - this function will be called with the current
+     * buffer status as its sole argument.
      * @param updateInterval - the interval in milliseconds between
-     * successive invocations of callback.
+     * successive invocations of the callback function (defaults to
+     * 1s).
      * @param callbackCount - the number of buffer bytes to be included
-     * in the status passed to the callback function.
+     * in the status value passed to the callback function (defaults to
+     * one byte).
      */
     void configureCallback(void (*callback)(unsigned int), unsigned long updateInterval = 1000UL, unsigned int callbackCount = 1U);
     
     /**
      * @brief Maybe invoke a configured callback.
      * 
-     * @param force - if true then invoke callback immediately. 
+     * This method should be called from loop() and if force is false
+     * will determine when to invoke the callback function based upon
+     * the specified update interval.
+     * 
+     * @param force - if true then invoke callback immediately
+     * (defaults to false).
      */
     void callbackMaybe(bool force = false);
 

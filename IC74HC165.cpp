@@ -63,4 +63,3 @@ void IC74HC165::callbackMaybe(bool force) {
     }
   }
 }
-
