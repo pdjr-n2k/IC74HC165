@@ -60,15 +60,23 @@ class IC74HC165 {
     /**
      * @brief Configure an automatic callback for handling buffer data.
      * 
-     * @param updateInterval 
-     * @param callback 
+     * This method configures a mechanism for invoking a callback
+     * function at a regular interfval and works in concert with
+     * callbackMaybe().
+     * 
+     * @param callback - the function to be called with the current
+     * buffer status,
+     * @param updateInterval - the interval in milliseconds between
+     * successive invocations of callback.
+     * @param callbackCount - the number of buffer bytes to be included
+     * in the status passed to the callback function.
      */
-    void configureCallback(void (*callback)(unsigned int), unsigned long updateInterval = 1000UL, unsigned int count = 1U);
+    void configureCallback(void (*callback)(unsigned int), unsigned long updateInterval = 1000UL, unsigned int callbackCount = 1U);
     
     /**
-     * @brief Maybe nvoke a configured callback.
+     * @brief Maybe invoke a configured callback.
      * 
-     * @param force 
+     * @param force - if true then invoke callback immediately. 
      */
     void callbackMaybe(bool force = false);
 
