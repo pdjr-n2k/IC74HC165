@@ -57,10 +57,30 @@ class IC74HC165 {
      */
     unsigned int readBit(unsigned int bit);
 
+    /**
+     * @brief Configure an automatic callback for handling buffer data.
+     * 
+     * @param updateInterval 
+     * @param callback 
+     */
+    void configureCallback(void (*callback)(unsigned int), unsigned long updateInterval = 1000UL, unsigned int count = 1U);
+    
+    /**
+     * @brief Maybe nvoke a configured callback.
+     * 
+     * @param force 
+     */
+    void callbackMaybe(bool force = false);
+
+
   private:
     uint8_t gpioClock;
     uint8_t gpioData;
     uint8_t gpioLatch;
+    void (*callback)(unsigned int);
+    unsigned long updateInterval;
+    unsigned int callbackCount;
+    
 };
 
 #endif
