@@ -64,6 +64,9 @@ class IC74HC165 {
      * function at a regular interfval and works in concert with
      * callbackMaybe().
      * 
+     * Make a call to configureCallback() in setup() and make a call to
+     * callbackMaybe() in loop().
+     * 
      * @param callback - this function will be called with the current
      * buffer status as its sole argument.
      * @param updateInterval - the interval in milliseconds between
