@@ -26,24 +26,20 @@ void IC74HC165::begin() {
   pinMode(this->gpioLatch, OUTPUT);
 }
 
-uint8_t IC74HC165::readByte() {
-  return((unsigned char) this->read());
-}
+unsigned char IC74HC165::read(unsigned int buffer) {
+  unsigned char retval;
 
-unsigned int IC74HC165::read(unsigned int count) {
-  unsigned int retval = 0;
   digitalWrite(this->gpioClock, 1);
   digitalWrite(this->gpioLatch, 1);
-  while (count--) {
-    retval = (retval << 8);
-    retval |= shiftIn(this->gpioData, this->gpioClock, MSBFIRST);
+  for (unsigned int i = 0; i <= buffer; i++) {
+    retval = shiftIn(this->gpioData, this->gpioClock, MSBFIRST);  
   }
   digitalWrite(this->gpioLatch, 0);
   return(retval);
 }
 
 unsigned int IC74HC165::readBit(unsigned int bit) {
-  return(bitRead(this->read((bit / 8) + 1), bit));
+  return(bitRead(this->read(bit / 8), (bit % 8)));
 }
 
 void IC74HC165::configureCallback(void (*callback)(unsigned int), unsigned long updateInterval, unsigned int callbackCount) {

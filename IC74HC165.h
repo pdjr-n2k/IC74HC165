@@ -10,6 +10,14 @@
 #ifndef IC74HC165_H
 #define IC74HC165_H
 
+/**
+ * @brief Interface for a 74HC165-based PISO buffer.
+ * 
+ * A PISO buffer can be built from one or more daisy-chained IC74HC165
+ * ICs and can thus support multiple parallel inputs with each IC
+ * supporting exactly eight input channels.
+ * 
+ */
 class IC74HC165 {
 
   public:
@@ -24,33 +32,30 @@ class IC74HC165 {
     IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch);
 
     /******************************************************************
-     * @brief Set the I/O mode of the configured GPIO pins.
+     * @brief Initialise the connection to the PISO buffer.
      * 
-     * In Arduino world this method should be called from setup(). 
+     * Set the I/O mode of the GPIO pins used to interface with the
+     * buffer. Must be called from setup().
      */
-    void begin();
+     void begin();
 
     /******************************************************************
-     * @brief Convenience function to read data from a single connected
-     * buffer (or the first buffer in a daisy-chain). 
+     * @brief Read data from the PISO buffer.
      * 
-     * @return uint8_t - the status of the buffer.
+     * Returns the status of a selected single IC in the buffer. Each
+     * IC is addressed by its ordinal number in the daisy chain, with
+     * the first IC having address 0.
+     *   
+     * @param buffer - the ordinal number of the IC whose status should
+     * be returned (0 specifies the first IC).
+     * 
+     * @return unsigned char status recovered from the specified IC or
+     * undefined if the IC selection address was invalid.
      */
-    uint8_t readByte();
+    unsigned char read(unsigned int buffer = 0U);
 
     /******************************************************************
-     * @brief Read data from one or more buffers.
-     * 
-     * @param count - the number of buffers whose data should be read
-     * (defaults to 1).
-     * 
-     * @return unsigned int - the status of the buffer(s). 
-     */
-    unsigned int read(unsigned int count = 1U);
-
-    /******************************************************************
-     * @brief Return the value of a specified bit from the connected
-     * buffer(s).
+     * @brief Get the value of a specified bit in the PISO buffer.
      * 
      * @param bit - the bit to be selected.
      * @return int  - the state of the specified bit (0 or 1).
