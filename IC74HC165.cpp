@@ -26,8 +26,8 @@ void IC74HC165::begin() {
   pinMode(this->gpioLatch, OUTPUT);
 }
 
-unsigned char IC74HC165::read(unsigned int buffer) {
-  unsigned char retval;
+uint8_t IC74HC165::read(unsigned int buffer) {
+  uint8_t retval;
 
   digitalWrite(this->gpioClock, 1);
   digitalWrite(this->gpioLatch, 1);
@@ -42,19 +42,21 @@ unsigned int IC74HC165::readBit(unsigned int bit) {
   return(bitRead(this->read(bit / 8), (bit % 8)));
 }
 
-void IC74HC165::configureCallback(void (*callback)(unsigned int), unsigned long updateInterval, unsigned int callbackCount) {
+void IC74HC165::configureCallback(void (*callback)(uint8_t *), unsigned long updateInterval, unsigned int callbackCount) {
   this->callback = callback;
   this->updateInterval = updateInterval;
   this->callbackCount = callbackCount;
 }
     
 void IC74HC165::callbackMaybe(bool force) {
+  static uint8_t *buffer = new uint8_t[this->callbackCount - 1];
   static unsigned long deadline = 0UL;
   unsigned long now = millis();
 
   if (this->callback) {
     if (((this->updateInterval) && (now > deadline)) || force) {
-      this->callback(this->read(this->callbackCount));
+      for (unsigned int i = 0; i < this->callbackCount; i++) buffer[i] = this->read(i);
+      this->callback(buffer);
       deadline = (now + this->updateInterval);
     }
   }

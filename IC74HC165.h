@@ -13,10 +13,12 @@
 /**
  * @brief Interface for a 74HC165-based PISO buffer.
  * 
- * A PISO buffer can be built from one or more daisy-chained IC74HC165
- * ICs and can thus support multiple parallel inputs with each IC
- * supporting exactly eight input channels.
+ * A buffer consists of one or more daisy-chained IC74HC165 ICs each of
+ * which maintains an 8-bit status.
  * 
+ * This library allows the hardware interface to a buffer to be
+ * configured and initialised and allows the buffer to be interrogated
+ * at the byte or bit level. 
  */
 class IC74HC165 {
 
@@ -49,10 +51,10 @@ class IC74HC165 {
      * @param buffer - the ordinal number of the IC whose status should
      * be returned (0 specifies the first IC).
      * 
-     * @return unsigned char status recovered from the specified IC or
+     * @return status byte recovered from the specified IC or
      * undefined if the IC selection address was invalid.
      */
-    unsigned char read(unsigned int buffer = 0U);
+    uint8_t read(unsigned int buffer = 0U);
 
     /******************************************************************
      * @brief Get the value of a specified bit in the PISO buffer.
@@ -66,22 +68,23 @@ class IC74HC165 {
      * @brief Configure an automatic callback for handling buffer data.
      * 
      * This method configures a mechanism for invoking a callback
-     * function at a regular interfval and works in concert with
+     * function at a regular interval and works in concert with
      * callbackMaybe().
      * 
      * Make a call to configureCallback() in setup() and make a call to
      * callbackMaybe() in loop().
      * 
-     * @param callback - this function will be called with the current
-     * buffer status as its sole argument.
+     * @param callback - this function will be called with the status
+     * of each IC in the buffer passed as an element in the array
+     * passed as its sole argument.
      * @param updateInterval - the interval in milliseconds between
      * successive invocations of the callback function (defaults to
      * 1s).
      * @param callbackCount - the number of buffer bytes to be included
-     * in the status value passed to the callback function (defaults to
+     * in the status array passed to the callback function (defaults to
      * one byte).
      */
-    void configureCallback(void (*callback)(unsigned int), unsigned long updateInterval = 1000UL, unsigned int callbackCount = 1U);
+    void configureCallback(void (*callback)(uint8_t *), unsigned long updateInterval = 1000UL, unsigned int callbackCount = 1U);
     
     /**
      * @brief Maybe invoke a configured callback.
@@ -100,7 +103,7 @@ class IC74HC165 {
     uint8_t gpioClock;
     uint8_t gpioData;
     uint8_t gpioLatch;
-    void (*callback)(unsigned int);
+    void (*callback)(uint8_t *);
     unsigned long updateInterval;
     unsigned int callbackCount;
     
