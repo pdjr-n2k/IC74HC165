@@ -46,17 +46,17 @@ void IC74HC165::configureCallback(void (*callback)(uint8_t *), unsigned long upd
   this->callback = callback;
   this->updateInterval = updateInterval;
   this->callbackCount = callbackCount;
+  this->callbackBuffer = new uint8_t[this->callbackCount];
 }
     
 void IC74HC165::callbackMaybe(bool force) {
-  static uint8_t *buffer = new uint8_t[this->callbackCount - 1];
   static unsigned long deadline = 0UL;
   unsigned long now = millis();
 
   if (this->callback) {
     if (((this->updateInterval) && (now > deadline)) || force) {
-      for (unsigned int i = 0; i < this->callbackCount; i++) buffer[i] = this->read(i);
-      this->callback(buffer);
+      for (unsigned int i = 0; i < this->callbackCount; i++) this->callbackBuffer[i] = this->read(i);
+      this->callback(this->callbackBuffer);
       deadline = (now + this->updateInterval);
     }
   }

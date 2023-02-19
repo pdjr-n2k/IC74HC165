@@ -106,6 +106,7 @@ class IC74HC165 {
     void (*callback)(uint8_t *);
     unsigned long updateInterval;
     unsigned int callbackCount;
+    uint8_t *callbackBuffer;
     
 };
 
