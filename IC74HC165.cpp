@@ -11,13 +11,15 @@
 #include <Arduino.h>
 #include <IC74HC165.h>
 
-IC74HC165::IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch) {
+IC74HC165::IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch, unsigned int bufferCount) {
   this->gpioClock = gpioClock;
   this->gpioData = gpioData;
   this->gpioLatch = gpioLatch;
+  this->bufferCount = bufferCount;
+  this->buffer = new uint8_t[this->bufferCount];
+
   this->callback = 0;
-  this->updateInterval = 0UL;
-  this->callbackCount = 0U;
+  this->callbackInterval = 0UL;
 }
 
 void IC74HC165::begin() {
@@ -26,27 +28,26 @@ void IC74HC165::begin() {
   pinMode(this->gpioLatch, OUTPUT);
 }
 
-uint8_t IC74HC165::read(unsigned int buffer) {
+uint8_t *IC74HC165::read() {
   uint8_t retval;
 
   digitalWrite(this->gpioClock, 1);
   digitalWrite(this->gpioLatch, 1);
-  for (unsigned int i = 0; i <= buffer; i++) {
-    retval = shiftIn(this->gpioData, this->gpioClock, MSBFIRST);  
+  for (unsigned int i = 0; i < this->bufferCount; i++) {
+    this->buffer[i] = shiftIn(this->gpioData, this->gpioClock, MSBFIRST);  
   }
   digitalWrite(this->gpioLatch, 0);
-  return(retval);
+  return(this->buffer);
 }
 
 unsigned int IC74HC165::readBit(unsigned int bit) {
-  return(bitRead(this->read(bit / 8), (bit % 8)));
+  this->read();
+  return(bitRead(this->buffer[bit / 8], (bit % 8)));
 }
 
-void IC74HC165::configureCallback(void (*callback)(uint8_t *), unsigned long updateInterval, unsigned int callbackCount) {
+void IC74HC165::configureCallback(void (*callback)(uint8_t *), unsigned long callbackInterval) {
   this->callback = callback;
-  this->updateInterval = updateInterval;
-  this->callbackCount = callbackCount;
-  this->callbackBuffer = new uint8_t[this->callbackCount];
+  this->callbackInterval = callbackInterval;
 }
     
 void IC74HC165::callbackMaybe(bool force) {
@@ -54,10 +55,10 @@ void IC74HC165::callbackMaybe(bool force) {
   unsigned long now = millis();
 
   if (this->callback) {
-    if (((this->updateInterval) && (now > deadline)) || force) {
-      for (unsigned int i = 0; i < this->callbackCount; i++) this->callbackBuffer[i] = this->read(i);
-      this->callback(this->callbackBuffer);
-      deadline = (now + this->updateInterval);
+    if (((this->callbackInterval) && (now > deadline)) || force) {
+      this->read();
+      this->callback(this->buffer);
+      deadline = (now + this->callbackInterval);
     }
   }
 }

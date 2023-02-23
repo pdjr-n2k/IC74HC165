@@ -28,10 +28,11 @@ class IC74HC165 {
      * @brief Construct a new IC74HC165 object
      * 
      * @param gpioClock - the GPIO pin connected to IC pin 2 (CP/clock).
-     * @param gpioData  - the GPIO pin connected to IC pin 9 (Q7/data).
+     * @param gpioData - the GPIO pin connected to IC pin 9 (Q7/data).
      * @param gpioLatch - the GPIO pin connected to IC pin 1 (PL/latch).
+     * @param bufferCount - the number of buffer ICs in the daisy-chain.
      */
-    IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch);
+    IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch, unsigned int bufferCount = 1);
 
     /******************************************************************
      * @brief Initialise the connection to the PISO buffer.
@@ -48,13 +49,10 @@ class IC74HC165 {
      * IC is addressed by its ordinal number in the daisy chain, with
      * the first IC having address 0.
      *   
-     * @param buffer - the ordinal number of the IC whose status should
-     * be returned (0 specifies the first IC).
-     * 
-     * @return status byte recovered from the specified IC or
-     * undefined if the IC selection address was invalid.
+     * @return pointer to an array containing the status of all the
+     * buffer ICs in the daisy-chain.
      */
-    uint8_t read(unsigned int buffer = 0U);
+    uint8_t *read();
 
     /******************************************************************
      * @brief Get the value of a specified bit in the PISO buffer.
@@ -77,14 +75,11 @@ class IC74HC165 {
      * @param callback - this function will be called with the status
      * of each IC in the buffer passed as an element in the array
      * passed as its sole argument.
-     * @param updateInterval - the interval in milliseconds between
+     * @param callbackInterval - the interval in milliseconds between
      * successive invocations of the callback function (defaults to
      * 1s).
-     * @param callbackCount - the number of buffer bytes to be included
-     * in the status array passed to the callback function (defaults to
-     * one byte).
      */
-    void configureCallback(void (*callback)(uint8_t *), unsigned long updateInterval = 1000UL, unsigned int callbackCount = 1U);
+    void configureCallback(void (*callback)(uint8_t *), unsigned long callbackInterval = 1000UL);
     
     /**
      * @brief Maybe invoke a configured callback.
@@ -103,10 +98,11 @@ class IC74HC165 {
     uint8_t gpioClock;
     uint8_t gpioData;
     uint8_t gpioLatch;
+    uint8_t *buffer;
+    unsigned int bufferCount;
+
     void (*callback)(uint8_t *);
-    unsigned long updateInterval;
-    unsigned int callbackCount;
-    uint8_t *callbackBuffer;
+    unsigned long callbackInterval;
     
 };
 
