@@ -45,12 +45,12 @@ class IC74HC165 {
     /******************************************************************
      * @brief Read data from the PISO buffer.
      * 
-     * Returns the status of a selected single IC in the buffer. Each
-     * IC is addressed by its ordinal number in the daisy chain, with
-     * the first IC having address 0.
+     * Returns the status of a the buffer as an array of status values
+     * each element representing the status of a single buffer IC.
      *   
      * @return pointer to an array containing the status of all the
-     * buffer ICs in the daisy-chain.
+     * buffer ICs in the daisy-chain.  Element 0 relates to the first
+     * IC in the chain, element 1 the second and so on.
      */
     uint8_t *read();
 
@@ -58,9 +58,9 @@ class IC74HC165 {
      * @brief Get the value of a specified bit in the PISO buffer.
      * 
      * @param bit - the bit to be selected.
-     * @return int  - the state of the specified bit (0 or 1).
+     * @return uint8_t - the state of the specified bit (0 or 1).
      */
-    unsigned int readBit(unsigned int bit);
+    uint8_t readBit(unsigned int bit);
 
     /**
      * @brief Configure an automatic callback for handling buffer data.

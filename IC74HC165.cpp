@@ -29,8 +29,6 @@ void IC74HC165::begin() {
 }
 
 uint8_t *IC74HC165::read() {
-  uint8_t retval;
-
   digitalWrite(this->gpioClock, 1);
   digitalWrite(this->gpioLatch, 1);
   for (unsigned int i = 0; i < this->bufferCount; i++) {
@@ -40,7 +38,7 @@ uint8_t *IC74HC165::read() {
   return(this->buffer);
 }
 
-unsigned int IC74HC165::readBit(unsigned int bit) {
+uint8_t IC74HC165::readBit(unsigned int bit) {
   this->read();
   return(bitRead(this->buffer[bit / 8], (bit % 8)));
 }
