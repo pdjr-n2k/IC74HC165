@@ -11,7 +11,7 @@
 #define IC74HC165_H
 
 /**
- * @brief Interface for a 74HC165-based PISO buffer.
+ * @brief ADT representing a 74HC165-based serial input buffer.
  * 
  * A buffer consists of one or more daisy-chained IC74HC165 ICs each of
  * which maintains an 8-bit status byte which reflects the state of its
@@ -26,43 +26,30 @@ class IC74HC165 {
   public:
 
     /******************************************************************
-     * @brief Construct a new IC74HC165 object
+     * @brief Create a new IC74HC165 object.
      * 
      * @param gpioClock - the GPIO pin connected to IC pin 2 (CP/clock).
      * @param gpioData - the GPIO pin connected to IC pin 9 (Q7/data).
      * @param gpioLatch - the GPIO pin connected to IC pin 1 (PL/latch).
-     * @param bufferCount - the number of buffer ICs in the daisy-chain
-     * (defaults to one).
+     * @param buffers - the number of buffer ICs in the daisy-chain (optiomal: defaults to one).
      */
-    IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch, unsigned int bufferCount = 1);
+    IC74HC165(uint8_t gpioClock, uint8_t gpioData, uint8_t gpioLatch, unsigned int buffers = 1);
 
     /******************************************************************
-     * @brief Initialise the connection to the PISO buffer.
+     * @brief Initialise connection to the PISO buffer.
      * 
-     * Set the I/O mode of the GPIO pins used to interface with the
-     * buffer. Best called from setup().
+     * Sets the I/O mode of the GPIO pins used to interface with the
+     * buffer and initialises the buffer from the current hardware
+     * state.
      */
      void begin();
 
     /******************************************************************
-     * @brief Read data from the PISO buffer.
+     * @brief Read the buffer's current state.
      * 
-     * Returns the status of a the buffer as an array of status values
-     * each element representing the status of a single buffer IC.
-     *   
-     * @return pointer to an array containing the status of all the
-     * buffer ICs in the daisy-chain.  Element 0 relates to the first
-     * IC in the chain, element 1 the second and so on.
+     * @return integer representing the current buffer state.
      */
-    uint8_t *read();
-
-    /******************************************************************
-     * @brief Get the value of a specified bit in the PISO buffer.
-     * 
-     * @param bit - the selected bit.
-     * @return uint8_t - the state of the selected bit (0 or 1).
-     */
-    uint8_t readBit(unsigned int bit);
+    unsigned int read();
 
     /**
      * @brief Configure an automatic callback for handling buffer data.
@@ -74,14 +61,14 @@ class IC74HC165 {
      * Make a call to configureCallback() in setup() and make a call to
      * callbackMaybe() in loop().
      * 
-     * @param callback - this function will be called with an array
+     * @param callback - this function will be called with the current an array
      * containing the status bytes of each IC in the buffer
      * daisy-chain.
      * @param callbackInterval - the interval in milliseconds between
      * successive invocations of the callback function (defaults to
      * 1s).
      */
-    void configureCallback(void (*callback)(uint8_t *), unsigned long callbackInterval = 1000UL);
+    void configureCallback(void (*callback)(unsigned int status), unsigned long callbackInterval = 1000UL);
     
     /**
      * @brief Maybe invoke the configured callback.
