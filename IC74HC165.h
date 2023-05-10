@@ -87,8 +87,7 @@ class IC74HC165 {
     uint8_t gpioClock;
     uint8_t gpioData;
     uint8_t gpioLatch;
-    uint8_t *buffer;
-    unsigned int bufferCount;
+    unsigned int buffers;
 
     void (*callback)(uint8_t *);
     unsigned long callbackInterval;

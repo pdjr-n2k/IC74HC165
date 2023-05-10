@@ -31,7 +31,7 @@ unsigned int IC74HC165::read() {
   unsigned int state = 0;
   digitalWrite(this->gpioClock, 1);
   digitalWrite(this->gpioLatch, 1);
-  for (unsigned int i = 0; i < this->bufferCount; i++) {
+  for (unsigned int i = 0; i < this->buffers; i++) {
     state << 8;
     state |= shiftIn(this->gpioData, this->gpioClock, MSBFIRST);  
   }
